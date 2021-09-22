@@ -11,7 +11,7 @@ cmd_open() {
 }
 
 cmd_add() {
-	export URL="$2"
+	export URL="$1"
 
 	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
 	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
