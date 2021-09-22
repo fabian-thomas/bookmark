@@ -1,0 +1,8 @@
+#!/bin/sh
+export URL="$1"
+
+BOOKMARK="$(bookmark list | $DMENU -p Name -i)"
+if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
+	export BOOKMARK
+	"$TERMINAL" -e sh -c 'echo "$URL" | bookmark insert "$BOOKMARK" -'
+fi

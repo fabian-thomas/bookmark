@@ -1,0 +1,108 @@
+#!/bin/sh
+
+# umask "${PASSWORD_STORE_UMASK:-077}"
+
+PREFIX="${BOOKMARKS_DIR:-$HOME/.bookmarks}"
+
+unset GIT_DIR GIT_WORK_TREE GIT_NAMESPACE GIT_INDEX_FILE GIT_INDEX_VERSION GIT_OBJECT_DIRECTORY GIT_COMMON_DIR
+# export GIT_CEILING_DIRECTORIES="$PREFIX/.."
+
+die() {
+	echo "$@" >&2
+	exit 1
+}
+
+commit_changes() {
+	git -C "$PREFIX" add "$1"
+	git -C "$PREFIX" commit -m "$2"
+}
+
+cmd_init() {
+	[ -d "$PREFIX" ] && die "Directory $PREFIX exists already. Nothing changed."
+
+	mkdir -p "$PREFIX"
+	git -C "$PREFIX" init
+}
+
+cmd_show() {
+	if [ -f "$PREFIX/$1" ]; then
+		cat "$PREFIX/$1"
+	else
+		die "Bookmark $PREFIX/$1 not found."
+	fi
+}
+
+cmd_edit() {
+	if [ -f "$PREFIX/$1" ]; then
+		$EDITOR "$PREFIX/$1"
+		if ! git -C "$PREFIX" diff --quiet "$1"
+		then
+			commit_changes "$1" "Edit url for $1 using $EDITOR."
+		fi
+	else
+		die "Bookmark $PREFIX/$1 doesn't exist. Consider inserting it first."
+	fi
+}
+
+cmd_insert() {
+	if [ -f "$PREFIX/$1" ]; then
+		die "Bookmark $PREFIX/$1 exists already. Consider editing."
+	else
+		temp=$(mktemp)
+		if [ "$2" = "-" ]; then
+			tee "$temp" > /dev/null
+		fi
+		$EDITOR "$temp"
+		if [ -s "$temp" ]; then
+			mkdir -p "$(dirname "$PREFIX/$1")"
+			mv "$temp" "$PREFIX/$1"
+			commit_changes "$1" "Add bookmark $1."
+		else
+			rm "$temp"
+		fi
+	fi
+}
+
+cmd_clip() {
+	if [[ -n $WAYLAND_DISPLAY ]]; then
+		local copy_cmd=( wl-copy )
+	elif [[ -n $DISPLAY ]]; then
+		local copy_cmd=( xclip -selection clipboard )
+	else
+		die "Error: No X11 or Wayland display detected."
+	fi
+	
+	cmd_show "$@" | "${copy_cmd[@]}"
+}
+
+cmd_list() {
+	find "$PREFIX/$1" -path '*/.git' -prune -or -type f -printf "%P\n" | sort
+}
+
+cmd_open() {
+	if [ -f "$PREFIX/$1" ]; then
+		xdg-open "$(< "$PREFIX/$1")"
+	else
+		die "Bookmark $PREFIX/$1 does not exist."
+	fi
+}
+
+case "$1" in
+	init) shift;                cmd_init "$@" ;;
+	# help|--help) shift;           cmd_usage "$@" ;;
+	# version|--version) shift; cmd_version "$@" ;;
+	show) shift;                cmd_show "$@" ;;
+	list|ls) shift;             cmd_list "$@" ;;
+	clip) shift;                cmd_clip "$@" ;;
+	open) shift;                cmd_open "$@" ;;
+	# find|search) shift;           cmd_find "$@" ;;
+	# grep) shift;              cmd_grep "$@" ;;
+	insert|add) shift;          cmd_insert "$@" ;;
+	edit) shift;                cmd_edit "$@" ;;
+	# delete|rm|remove) shift;  cmd_delete "$@" ;;
+	# rename|mv) shift;         cmd_copy_move "move" "$@" ;;
+	# copy|cp) shift;               cmd_copy_move "copy" "$@" ;;
+	# git) shift;                   cmd_git "$@" ;;
+	*)                          cmd_show "$@" ;;
+esac
+exit 0
