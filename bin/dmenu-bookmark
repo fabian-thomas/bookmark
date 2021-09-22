@@ -16,7 +16,11 @@ cmd_add() {
 	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
 	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
 		export BOOKMARK
-		"$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
+		if [ -n "$URL" ]; then
+			"$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
+		else
+			"$TERMINAL" -e sh -c 'bookmark add "$BOOKMARK"'
+		fi
 	fi
 }
 
