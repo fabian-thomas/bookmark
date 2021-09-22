@@ -1,8 +1,36 @@
 #!/bin/sh
-export URL="$1"
 
-BOOKMARK="$(bookmark list | $DMENU -p Name -i)"
-if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
-	export BOOKMARK
-	"$TERMINAL" -e sh -c 'echo "$URL" | bookmark insert "$BOOKMARK" -'
-fi
+DMENU_COMMAND="$DMENU -p Name -i"
+
+cmd_open() {
+	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
+	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
+		export BOOKMARK
+		bookmark open "$BOOKMARK"
+	fi
+}
+
+cmd_add() {
+	export URL="$2"
+
+	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
+	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
+		export BOOKMARK
+		"$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
+	fi
+}
+
+cmd_edit() {
+	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
+	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
+		export BOOKMARK
+		"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
+	fi
+}
+
+case "$1" in
+	open) shift;    cmd_open "$@" ;;
+	add) shift;     cmd_add "$@" ;;
+	edit) shift;    cmd_edit "$@" ;;
+	*)              cmd_open "$@" ;;
+esac

@@ -40,11 +40,11 @@ cmd_edit() {
 			commit_changes "$1" "Edit url for $1 using $EDITOR."
 		fi
 	else
-		die "Bookmark $PREFIX/$1 doesn't exist. Consider inserting it first."
+		die "Bookmark $PREFIX/$1 doesn't exist. Consider adding it first."
 	fi
 }
 
-cmd_insert() {
+cmd_add() {
 	if [ -f "$PREFIX/$1" ]; then
 		die "Bookmark $PREFIX/$1 exists already. Consider editing."
 	else
@@ -97,7 +97,7 @@ case "$1" in
 	open) shift;                cmd_open "$@" ;;
 	# find|search) shift;           cmd_find "$@" ;;
 	# grep) shift;              cmd_grep "$@" ;;
-	insert|add) shift;          cmd_insert "$@" ;;
+	add|insert) shift;          cmd_add "$@" ;;
 	edit) shift;                cmd_edit "$@" ;;
 	# delete|rm|remove) shift;  cmd_delete "$@" ;;
 	# rename|mv) shift;         cmd_copy_move "move" "$@" ;;
