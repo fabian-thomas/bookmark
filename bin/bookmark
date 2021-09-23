@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # umask "${PASSWORD_STORE_UMASK:-077}"
+# TODO autocomplete
 
 PREFIX="${BOOKMARKS_DIR:-$HOME/.bookmarks}"
 
@@ -26,7 +27,7 @@ cmd_init() {
 
 cmd_show() {
 	if [ -f "$PREFIX/$1" ]; then
-		cat "$PREFIX/$1"
+		head -1 "$PREFIX/$1"
 	else
 		die "Bookmark $PREFIX/$1 not found."
 	fi
