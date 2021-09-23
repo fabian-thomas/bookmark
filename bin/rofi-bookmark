@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-export CACHE_DIR="$HOME/.cache/bookmarks"
+export CACHE_DIR="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
 export CACHE_ROFI="$CACHE_DIR/rofi"
 
 bindings=(
-	# new bookbark
-	-kb-custom-1 Alt+n
-	# edit bookmark
-	-kb-custom-2 Alt+e
+	-kb-custom-1 Alt+e
 )
-mesg="<b>${bindings[1]}</b>: add | <b>${bindings[3]}</b>: edit"
+mesg="<b>${bindings[1]}</b>: edit"
 
 #TODO:
 #yank key combo
@@ -22,21 +19,15 @@ open() {
 
 edit() {
 	if [ -n "$1" ]; then
-		bookmark edit "$1"
-	fi
-}
-
-add() {
-	if [ -n "$1" ]; then
-		bookmark add "$1"
+		export BOOKMARK="$1"
+		"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
 	fi
 }
 
 on_rofi_exit() {
 	case "$1" in
 		0) open "$bookmark";;
-		10) add "$bookmark";;
-		11) edit "$bookmark";;
+		10) edit "$bookmark";;
 		*) exit "$1";;
 	esac
 }
