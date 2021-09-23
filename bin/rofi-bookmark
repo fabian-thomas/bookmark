@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+export CACHE_DIR="$HOME/.cache/bookmarks"
+export CACHE_ROFI="$CACHE_DIR/rofi"
+
+bindings=(
+	# new bookbark
+	-kb-custom-1 Alt+n
+	# edit bookmark
+	-kb-custom-2 Alt+e
+)
+mesg="<b>${bindings[1]}</b>: add | <b>${bindings[3]}</b>: edit"
+
+#TODO:
+#yank key combo
+# set -e
+
+open() {
+	if [ -n "$1" ]; then
+		bookmark open "$1"
+	fi
+}
+
+edit() {
+	if [ -n "$1" ]; then
+		bookmark edit "$1"
+	fi
+}
+
+add() {
+	if [ -n "$1" ]; then
+		bookmark add "$1"
+	fi
+}
+
+on_rofi_exit() {
+	case "$1" in
+		0) open "$bookmark";;
+		10) add "$bookmark";;
+		11) edit "$bookmark";;
+		*) exit "$1";;
+	esac
+}
+
+case "$1" in
+	download) shift; rofi-bookmark-download.py "$@"; exit ;;
+	*) ;;
+esac
+
+bookmark="$(rofi -dmenu -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+
+on_rofi_exit "$?" "$bookmark"
