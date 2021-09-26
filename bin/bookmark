@@ -65,15 +65,15 @@ cmd_add() {
 }
 
 cmd_clip() {
-	if [[ -n $WAYLAND_DISPLAY ]]; then
-		local copy_cmd=( wl-copy )
-	elif [[ -n $DISPLAY ]]; then
-		local copy_cmd=( xclip -selection clipboard )
+	if [ -n "$WAYLAND_DISPLAY" ]; then
+		copy_cmd="wl-copy"
+	elif [ -n "$DISPLAY" ]; then
+		copy_cmd="xclip -selection clipboard"
 	else
 		die "Error: No X11 or Wayland display detected."
 	fi
 	
-	cmd_show "$@" | "${copy_cmd[@]}"
+	cmd_show "$@" | eval "$copy_cmd"
 }
 
 cmd_list() {
@@ -82,7 +82,7 @@ cmd_list() {
 
 cmd_open() {
 	if [ -f "$PREFIX/$1" ]; then
-		xdg-open "$(< "$PREFIX/$1")"
+		xdg-open "$(cat "$PREFIX/$1")"
 	else
 		die "Bookmark $PREFIX/$1 does not exist."
 	fi
