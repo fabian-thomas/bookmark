@@ -1,12 +1,10 @@
 #!/bin/sh
 
-# umask "${PASSWORD_STORE_UMASK:-077}"
 # TODO autocomplete
 
 PREFIX="${BOOKMARKS_DIR:-$HOME/.bookmarks}"
 
 unset GIT_DIR GIT_WORK_TREE GIT_NAMESPACE GIT_INDEX_FILE GIT_INDEX_VERSION GIT_OBJECT_DIRECTORY GIT_COMMON_DIR
-# export GIT_CEILING_DIRECTORIES="$PREFIX/.."
 
 die() {
 	echo "$@" >&2
@@ -88,22 +86,19 @@ cmd_open() {
 	fi
 }
 
+cmd_git() {
+	git -C "$PREFIX" $@
+}
+
 case "$1" in
 	init) shift;                cmd_init "$@" ;;
-	# help|--help) shift;           cmd_usage "$@" ;;
-	# version|--version) shift; cmd_version "$@" ;;
 	show) shift;                cmd_show "$@" ;;
 	list|ls) shift;             cmd_list "$@" ;;
 	clip) shift;                cmd_clip "$@" ;;
 	open) shift;                cmd_open "$@" ;;
-	# find|search) shift;           cmd_find "$@" ;;
-	# grep) shift;              cmd_grep "$@" ;;
 	add|insert) shift;          cmd_add "$@" ;;
 	edit) shift;                cmd_edit "$@" ;;
-	# delete|rm|remove) shift;  cmd_delete "$@" ;;
-	# rename|mv) shift;         cmd_copy_move "move" "$@" ;;
-	# copy|cp) shift;               cmd_copy_move "copy" "$@" ;;
-	# git) shift;                   cmd_git "$@" ;;
+	git) shift;                 cmd_git "$@" ;;
 	*)                          cmd_show "$@" ;;
 esac
 exit 0
