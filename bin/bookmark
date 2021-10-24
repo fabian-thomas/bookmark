@@ -62,6 +62,15 @@ cmd_add() {
 	fi
 }
 
+cmd_delete() {
+	if [ -f "$PREFIX/$1" ]; then
+		rm "$PREFIX/$1"
+		commit_changes "$1" "Delete bookmark $1."
+	else
+		die "Bookmark $PREFIX/$1 doesn't exist."
+	fi
+}
+
 cmd_clip() {
 	if [ -n "$WAYLAND_DISPLAY" ]; then
 		copy_cmd="wl-copy"
@@ -98,6 +107,7 @@ case "$1" in
 	open) shift;                cmd_open "$@" ;;
 	add|insert) shift;          cmd_add "$@" ;;
 	edit) shift;                cmd_edit "$@" ;;
+	rm|delete) shift;           cmd_delete "$@" ;;
 	git) shift;                 cmd_git "$@" ;;
 	*)                          cmd_show "$@" ;;
 esac
