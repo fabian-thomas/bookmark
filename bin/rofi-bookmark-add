@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+export CACHE_DIR="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
+export CACHE_ROFI="$CACHE_DIR/rofi"
+
+export URL="$1"
+[ -z "$URL" ] && echo "url has be non-zero" && exit 1
+
+# fetch title of website
+title=$(wget -qO- "$URL" 2>/dev/null | perl -l -0777 -ne 'print $1 if /<title.*?>\s*(.*?)\s*<\/title/si' | recode html..)
+
+bindings=(
+    -kb-custom-1 Alt+t
+)
+mesg="<b>${bindings[1]}</b>: append \"$title\""
+
+add() {
+    export BOOKMARK=$1
+    if [ -n "$BOOKMARK" ]; then
+        "$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
+    fi
+}
+
+on_rofi_exit() {
+    case "$1" in
+        0) add "$bookmark" ;;
+        10) add "$bookmark$title" ;;
+        *) exit "$1";;
+    esac
+}
+
+bookmark="$(rofi -dmenu -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+
+on_rofi_exit "$?" "$bookmark"
