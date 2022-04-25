@@ -89,7 +89,11 @@ cmd_list() {
 
 cmd_open() {
 	if [ -f "$PREFIX/$1" ]; then
-		xdg-open "$(cat "$PREFIX/$1")"
+		if [ -n "$XDG_OPEN" ]; then
+			xdg-open "$(cat "$PREFIX/$1")"
+		else
+			$XDG_OPEN "$(cat "$PREFIX/$1")"
+		fi
 	else
 		die "Bookmark $PREFIX/$1 does not exist."
 	fi
