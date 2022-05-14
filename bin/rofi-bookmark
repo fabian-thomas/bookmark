@@ -4,32 +4,35 @@ export CACHE_ROFI="$CACHE_DIR/rofi"
 
 bindings=(
 	-kb-custom-1 Alt+e
+	-kb-custom-2 Alt+c
 )
-mesg="<b>${bindings[1]}</b>: edit"
+mesg="<b>${bindings[1]}</b>: edit, <b>${bindings[3]}</b>: clip"
 
 #TODO:
-#yank key combo
 # set -e
 
 open() {
-	if [ -n "$1" ]; then
-		bookmark open "$1"
-	fi
+	bookmark open "$1"
+}
+
+clip() {
+	bookmark clip "$1"
 }
 
 edit() {
-	if [ -n "$1" ]; then
-		export BOOKMARK="$1"
-		"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
-	fi
+	export BOOKMARK="$1"
+	"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
 }
 
 on_rofi_exit() {
-	case "$1" in
-		0) open "$bookmark";;
-		10) edit "$bookmark";;
-		*) exit "$1";;
-	esac
+	if [ -n "$1" ]; then
+		case "$1" in
+			0)  open "$bookmark";;
+			10) edit "$bookmark";;
+			11) clip "$bookmark";;
+			*) exit "$1";;
+		esac
+	fi
 }
 
 case "$1" in
