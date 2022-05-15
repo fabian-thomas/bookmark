@@ -25,7 +25,7 @@ cmd_init() {
 
 cmd_show() {
 	if [ -f "$PREFIX/$1" ]; then
-		head -1 "$PREFIX/$1"
+		head -1 "$PREFIX/$1" | tr -d '\n'
 	else
 		die "Bookmark $PREFIX/$1 not found."
 	fi
@@ -80,7 +80,7 @@ cmd_clip() {
 		die "Error: No X11 or Wayland display detected."
 	fi
 	
-	cmd_show "$@" | eval "$copy_cmd"
+	cmd_show "$@" | $copy_cmd
 }
 
 cmd_list() {
