@@ -23,7 +23,7 @@ open() {
 }
 
 clip() {
-	bookmark clip "$1" && $notify "URL of $1 copied to clipboard."
+	bookmark clip "$1" && $notify "URL of $1 copied to clipboard." && sleep 1
 }
 
 edit() {
@@ -37,13 +37,15 @@ remove() {
 
 on_rofi_exit() {
 	if [ -n "$1" ]; then
-		case "$1" in
-			0)  open "$bookmark";;
-			10) edit "$bookmark";;
-			11) clip "$bookmark";;
-			12) remove "$bookmark";;
-			*) exit "$1";;
-		esac
+		for bookmark in $bookmarks; do
+			case "$1" in
+				0)  open "$bookmark";;
+				10) edit "$bookmark";;
+				11) clip "$bookmark";;
+				12) remove "$bookmark";;
+				*) echo "invalid bookmark: $bookmark" && exit 1;;
+			esac
+		done
 	fi
 }
 
@@ -52,6 +54,6 @@ case "$1" in
 	*) ;;
 esac
 
-bookmark="$(rofi -dmenu -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+bookmark="$(rofi -dmenu -multi-select -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
 
 on_rofi_exit "$?" "$bookmark"
