@@ -54,6 +54,6 @@ case "$1" in
 	*) ;;
 esac
 
-bookmark="$(rofi -dmenu -multi-select -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+bookmarks="$(rofi -dmenu -multi-select -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
 
 on_rofi_exit "$?" "$bookmark"
