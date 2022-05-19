@@ -47,17 +47,25 @@ cmd_add() {
 	if [ -f "$PREFIX/$1" ]; then
 		die "Bookmark $PREFIX/$1 exists already. Consider editing."
 	else
-		temp=$(mktemp)
-		if [ "$2" = "-" ]; then
-			tee "$temp" > /dev/null
-		fi
-		$EDITOR "$temp"
-		if [ -s "$temp" ]; then
-			mkdir -p "$(dirname "$PREFIX/$1")"
-			mv "$temp" "$PREFIX/$1"
-			commit_changes "$1" "Add bookmark $1."
+		if [ -t 0 ]; then
+			# running interactively
+			temp=$(mktemp)
+			if [ "$2" = "-" ]; then
+				tee "$temp" > /dev/null
+			fi
+			$EDITOR "$temp"
+			if [ -s "$temp" ]; then
+				mkdir -p "$(dirname "$PREFIX/$1")"
+				mv "$temp" "$PREFIX/$1"
+				commit_changes "$1" "Add bookmark $1."
+			else
+				rm "$temp"
+			fi
 		else
-			rm "$temp"
+			# read from stdin
+			mkdir -p "$(dirname "$PREFIX/$1")"
+			cat >"$PREFIX/$1"
+			commit_changes "$1" "Add bookmark $1."
 		fi
 	fi
 }
