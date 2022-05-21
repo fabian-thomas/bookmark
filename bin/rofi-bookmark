@@ -37,7 +37,7 @@ remove() {
 
 on_rofi_exit() {
 	if [ -n "$1" ]; then
-		for bookmark in $bookmarks; do
+		while IFS= read -r bookmark; do
 			case "$1" in
 				0)  open "$bookmark";;
 				10) edit "$bookmark";;
@@ -45,7 +45,7 @@ on_rofi_exit() {
 				12) remove "$bookmark";;
 				*) echo "invalid bookmark: $bookmark" && exit 1;;
 			esac
-		done
+		done <<< "$bookmarks"
 	fi
 }
 
