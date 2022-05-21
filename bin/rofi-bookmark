@@ -36,17 +36,18 @@ remove() {
 }
 
 on_rofi_exit() {
-	if [ -n "$1" ]; then
-		while IFS= read -r bookmark; do
-			case "$1" in
-				0)  open "$bookmark";;
-				10) edit "$bookmark";;
-				11) clip "$bookmark";;
-				12) remove "$bookmark";;
-				*) echo "invalid bookmark: $bookmark" && exit 1;;
-			esac
-		done <<< "$bookmarks"
-	fi
+	case "$1" in
+		1) exit 1;;
+		*) while IFS= read -r bookmark; do
+				case "$1" in
+					0)  open "$bookmark";;
+					10) edit "$bookmark";;
+					11) clip "$bookmark";;
+					12) remove "$bookmark";;
+					*)  echo "invalid exit code: $1" && exit 1;;
+				esac
+			done <<< "$bookmarks";;
+	esac
 }
 
 case "$1" in
@@ -54,6 +55,6 @@ case "$1" in
 	*) ;;
 esac
 
-bookmarks="$(rofi -dmenu -multi-select -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+bookmarks="$(rofi -dmenu -l 15 -async-pre-read 15 -multi-select -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
 
 on_rofi_exit "$?" "$bookmark"
