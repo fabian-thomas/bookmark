@@ -8,31 +8,36 @@ else
     notify="notify-send"
 fi
 
-export URL="$1"
-[ -z "$URL" ] && echo "url has be non-zero" && exit 1
+quickadd=0
+if [ "$1" == "--quick" ]; then
+    quickadd=1
+    shift
+fi
 
-# fetch title of website
-title=$(wget -qO- "$URL" 2>/dev/null | perl -l -0777 -ne 'print $1 if /<title.*?>\s*(.*?)\s*<\/title/si' | recode html..)
+url="$1"
+[ -z "$url" ] && echo "url (first parameter) has to be non-zero." && exit 1
 
-bindings=(
-    -kb-custom-1 Alt+t
-)
-mesg="<b>${bindings[1]}</b>: append \"$title\""
+title="$2"
+if [ -z "$title" ]; then
+    # if no title given fetch title of website
+    title=$(wget -qO- "$url" 2>/dev/null | perl -l -0777 -ne 'print $1 if /<title.*?>\s*(.*?)\s*<\/title/si' | recode html..)
+fi
+title=$(echo "$title" | sed 's/\//-/g')
 
 add() {
     if [ -n "$1" ]; then
-        echo "$URL" | bookmark add "$1" - && $notify "Bookmark $1 added."
+        echo "$url" | bookmark add "$1" - && $notify "Bookmark added: $1"
     fi
 }
 
-on_rofi_exit() {
-    case "$1" in
-        0) add "$bookmark" ;;
-        10) add "$bookmark$title" ;;
-        *) exit "$1";;
-    esac
-}
-
-bookmark="$(rofi -dmenu -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
-
-on_rofi_exit "$?" "$bookmark"
+if [ "$quickadd" -eq 1 ]; then
+    [ -z "$title" ] && echo "quick add needs title." && exit 1
+    add "*/$title"
+else
+    rofi_cmd="rofi -dmenu -show-icons -p Name -i"
+    if [ -n "$title" ]; then
+        bookmark="$($rofi_cmd -mesg "$title" < "$CACHE_ROFI")" && add "$bookmark"
+    else
+        bookmark="$($rofi_cmd < "$CACHE_ROFI")" && add "$bookmark"
+    fi
+fi
