@@ -2,6 +2,12 @@
 export CACHE_DIR="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
 export CACHE_ROFI="$CACHE_DIR/rofi"
 
+if which notify-system > /dev/null; then
+    notify="notify-system"
+else
+    notify="notify-send"
+fi
+
 export URL="$1"
 [ -z "$URL" ] && echo "url has be non-zero" && exit 1
 
@@ -14,9 +20,8 @@ bindings=(
 mesg="<b>${bindings[1]}</b>: append \"$title\""
 
 add() {
-    export BOOKMARK=$1
-    if [ -n "$BOOKMARK" ]; then
-        "$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
+    if [ -n "$1" ]; then
+        echo "$URL" | bookmark add "$1" - && $notify "Bookmark $1 added."
     fi
 }
 
