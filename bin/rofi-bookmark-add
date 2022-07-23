@@ -32,7 +32,7 @@ add() {
 
 if [ "$quickadd" -eq 1 ]; then
     [ -z "$title" ] && echo "quick add needs title." && exit 1
-    add "*/$title"
+    add "#/$title"
 else
     rofi_cmd="rofi -dmenu -show-icons -p Name -i"
     if [ -n "$title" ]; then
