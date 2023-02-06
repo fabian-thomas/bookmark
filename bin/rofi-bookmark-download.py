@@ -4,6 +4,8 @@ import subprocess
 import tldextract
 import requests
 import sys
+import tempfile
+import shutil
 
 retry = len(sys.argv) > 1 and sys.argv[1] == '--retry'
 
@@ -41,6 +43,22 @@ for url in url_icons:
         if res.status_code == requests.codes.ok:
             with open(filepath, 'wb') as file:
                 file.write(res.content)
+            if not filepath.endswith("svg"): # this is for the github case and probably breaks in other cases too
+                tmp=tempfile.mktemp(suffix='.ico')
+                # this fixes problems with images that are weirdly compressed and therefore
+                # not supported by rofi
+                p = subprocess.run(["convert", "-compress", "None", filepath, tmp])
+                # only copy when succesfull, some images break when we call convert...
+                if p.returncode == 0 and os.path.exists(tmp):
+                    shutil.move(tmp, filepath)
+                else:
+                    # try one more time with 50% resizing which works in practice
+                    p = subprocess.run(["convert", "-resize", "50%", filepath, tmp])
+                    if p.returncode == 0 and os.path.exists(tmp):
+                        shutil.move(tmp, filepath)
+                    else:
+                        if os.path.exists(tmp):
+                            os.remove(tmp)
         else:
             open(filepath, 'w').close()
 
