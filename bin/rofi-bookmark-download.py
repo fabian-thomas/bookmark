@@ -30,6 +30,8 @@ def fix_image(filepath):
                 os.remove(tmp)
             return False
 
+# User agent makes sure that some websites allow scraping.
+headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"}
 
 retry = len(sys.argv) > 1 and sys.argv[1] == '--retry'
 
@@ -81,10 +83,10 @@ for origin in origins:
         # Try with favicon library if no success with ddg.
         if not worked:
             try:
-                icons = favicon.get(origin, timeout=2)
+                icons = favicon.get(origin, timeout=2, headers=headers)
                 if len(icons) > 0:
                     icon = icons[0]
-                    res = requests.get(icon.url)
+                    res = requests.get(icon.url, headers=headers)
                     if res.status_code == requests.codes.ok:
                         with open(filepath, 'wb') as image:
                             image.write(res.content)
