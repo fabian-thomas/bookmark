@@ -27,7 +27,10 @@ title=$(echo "$title" | tr -d '/\*|:?<>' | tr -d "\'")
 
 add() {
     if [ -n "$1" ]; then
-        echo "$url" | bookmark add "$1" - && $notify "Bookmark added: $1"
+        if echo "$url" | bookmark add "$1" -; then
+            rofi-bookmark-download
+            $notify "Bookmark added: $1"
+        fi
     fi
 }
 
