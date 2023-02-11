@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-export CACHE_DIR="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
-export CACHE_ROFI="$CACHE_DIR/rofi"
+cache_dir="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
+cache_rofi="$CACHE_DIR/rofi"
 
 if which notify-system > /dev/null; then
     notify="notify-system"
@@ -55,6 +55,6 @@ case "$1" in
 	*) ;;
 esac
 
-bookmarks="$(rofi -dmenu -l 15 -async-pre-read 15 -multi-select -ballot-unselected-str "" -ballot-selected-str " " -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$CACHE_ROFI")"
+bookmarks="$(rofi -dmenu -l 15 -async-pre-read 15 -multi-select -ballot-unselected-str "" -ballot-selected-str " " -show-icons -p Name -i -mesg "$mesg" ${bindings[@]} < "$cache_rofi")"
 
 on_rofi_exit "$?" "$bookmark"

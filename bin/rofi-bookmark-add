@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-export CACHE_DIR="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
-export CACHE_ROFI="$CACHE_DIR/rofi"
+cache_dir="${XDG_CACHE_DIR:-$HOME/.cache}/bookmarks"
+cache_rofi="$CACHE_DIR/rofi"
 
 if which notify-system > /dev/null; then
     notify="notify-system"
@@ -40,8 +40,8 @@ if [ "$quickadd" -eq 1 ]; then
 else
     rofi_cmd="rofi -dmenu -show-icons -p Name -i"
     if [ -n "$title" ]; then
-        bookmark="$($rofi_cmd -mesg "$title" < "$CACHE_ROFI")" && add "$bookmark"
+        bookmark="$($rofi_cmd -mesg "$title" < "$cache_rofi")" && add "$bookmark"
     else
-        bookmark="$($rofi_cmd < "$CACHE_ROFI")" && add "$bookmark"
+        bookmark="$($rofi_cmd < "$cache_rofi")" && add "$bookmark"
     fi
 fi

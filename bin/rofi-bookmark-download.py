@@ -36,7 +36,7 @@ headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101
 retry = len(sys.argv) > 1 and sys.argv[1] == '--retry'
 
 bookmarks_dir=os.getenv("BOOKMARKS_DIR", os.path.join(os.getenv("HOME"), '.bookmarks'))
-cache_dir=os.path.join(os.getenv("CACHE_DIR", os.path.join(os.getenv("HOME"), ".cache")), "bookmarks")
+cache_dir=os.path.join(os.getenv("XDG_CACHE_DIR", os.path.join(os.path.join(os.getenv("HOME"), ".cache"))), "bookmarks")
 cache_rofi=os.path.join(cache_dir, "rofi")
 
 os.makedirs(cache_dir, exist_ok=True)
