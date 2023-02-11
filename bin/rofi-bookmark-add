@@ -22,7 +22,8 @@ if [ -z "$title" ]; then
     # if no title given fetch title of website
     title=$(wget -qO- "$url" 2>/dev/null | perl -l -0777 -ne 'print $1 if /<title.*?>\s*(.*?)\s*<\/title/si' | recode html..)
 fi
-title=$(echo "$title" | sed 's/\//-/g')
+# make title safe for use on android
+title=$(echo "$title" | tr -d '/\*|:?<>' | tr -d "\'")
 
 add() {
     if [ -n "$1" ]; then
