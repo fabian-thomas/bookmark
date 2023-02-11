@@ -90,7 +90,9 @@ for origin in origins:
                     if res.status_code == requests.codes.ok:
                         with open(filepath, 'wb') as image:
                             image.write(res.content)
-                        worked = fix_image(filepath)
+                        # I don't know why this breaks for these images but just
+                        # remove it for now.
+                        # worked = fix_image(filepath)
             except Exception:
                 pass
 
