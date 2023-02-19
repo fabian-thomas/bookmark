@@ -1,6 +1,6 @@
 # Why?
 
-[An image of the rofi frontend.](misc/rofi.png)
+![An image of the rofi frontend.](misc/rofi.png)
 
 While it might seem inherent that bookmarks of websites are stored in and accessed via your browser, I believe that web bookmarks should be stored and accessed independent of a browser.
 This makes it possible to easily switch browsers or using multiple browsers simultaneously.
