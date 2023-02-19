@@ -21,9 +21,7 @@ xdg-open "$(cat "$(fzf)")"
 The main interface I use to interact with my bookmark library is the rofi frontend.
 It is rather hacky, but has favicon support.
 
-# maybe include image
-
-# Features
+## Features
 - Rofi client with icon support. See image above.
 - Base cli client that works like `pass`.
 - Script to interactively add bookmarks (`rofi-bookmark-add`).
@@ -31,7 +29,7 @@ It is rather hacky, but has favicon support.
 - Theoretically there is also Android support via Termux, but these scripts currently reside in my dotfiles.
   In the future I might write an Android client for the format so that Termux is not needed anymore.
 
-# Limitations/Problems
+## Limitations/Problems
 - Managing bookmarks as files has the problem of bad performance when enumerating all files/bookmarks for a call to, e.g., rofi.
   I play around that issue by precomputing the inputs to rofi.
   This is either way needed for icon support. 
@@ -49,3 +47,26 @@ sudo make install
 # if you want to use rofi with icons: 
 pip install favicon
 ```
+
+# Usage
+
+Call `bookmark init` to init your bookmark dir.
+It uses the directory `~/.bookmarks` by default.
+I use `~/bookmarks` as my directory.
+You can change that via the `BOOKMARKS_DIR` environment variable.
+Then add some bookmarks, either with the rofi script or via the bookmark cli.
+Then run `rofi-bookmark-download` to collect your bookmarks and download icons.
+After running the download you can use `rofi-bookmark` rofi frontend.
+Just bind that to some key in your hotkey daemon of choice.
+
+For adding bookmarks from rofi type in the the full path (including the filename) you want your bookmark to be stored in and press `Alt+e`.
+This edits an existing or creates a new bookmark.
+This part would need improvements, but I usually add bookmarks directly from my browser.
+See the `rofi-bookmark-add` script for that.
+
+I use a directory with the name `!` for important bookmarks.
+Alphabetical sorting of rofi makes sure that bookmarks in this directory are shown first.
+
+Optionally setup a cron job for downloading icons every 15 minutes.
+That comes in handy when you sync your bookmarks between devices.
+
