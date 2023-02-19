@@ -1,4 +1,4 @@
-# Why?
+# bookmark
 
 ![An image of the rofi frontend.](misc/rofi.png)
 
