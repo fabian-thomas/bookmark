@@ -36,7 +36,7 @@ It is rather hacky, but has favicon support.
 - Since bookmark names are just filenames, we are limited by the filename characters that your kernel supports.
   On Linux you can of course not use slashes in the filename.
   That means you cannot have slashes in your bookmark names either.
-  When you sync your bookmarks to Android this problem gets worse, since Android limits valid characters further because of the used filesystem.
+  When you sync your bookmarks to Android this problem gets worse, since Android limits valid characters further because of the used file system.
   
 Because of these two limitations I'm still not sure if this pass-inspired approach is the right one for a bookmark system, but version control support is a must for me and defining a custom file format for bookmarks seems tricky.
 
@@ -59,7 +59,7 @@ Then run `rofi-bookmark-download` to collect your bookmarks and download icons.
 After running the download you can use `rofi-bookmark` rofi frontend.
 Just bind that to some key in your hotkey daemon of choice.
 
-For adding bookmarks from rofi type in the the full path (including the filename) you want your bookmark to be stored in and press `Alt+e`.
+For adding bookmarks from rofi, type in the the full path (including the filename) you want your bookmark to be stored in and press `Alt+e`.
 This edits an existing or creates a new bookmark.
 This part would need improvements, but I usually add bookmarks directly from my browser.
 See the `rofi-bookmark-add` script for that.
