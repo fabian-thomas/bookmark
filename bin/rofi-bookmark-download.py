@@ -30,6 +30,13 @@ def fix_image(filepath):
                 os.remove(tmp)
             return False
 
+def get_domain(origin):
+    res = tldextract.extract(origin)
+    domain = '.'.join(res[1:])
+    if res.subdomain != '':
+        domain = res.subdomain + '.' + domain
+    return domain
+
 # User agent makes sure that some websites allow scraping.
 headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/109.0"}
 
@@ -41,7 +48,7 @@ cache_rofi=os.path.join(cache_dir, "rofi")
 
 os.makedirs(cache_dir, exist_ok=True)
 
-# maps bookmarks to the correct second level domain
+# maps bookmarks to the correct domain
 bookmarks = {}
 # maps the origins (scheme+domain+port) to icon file names
 origins = {}
@@ -70,9 +77,8 @@ for origin in origins:
         worked = False
         # First try to download via duckduckgo service. Finding the favicon for
         # each site is too slow. So use the cache by default.
-        res = tldextract.extract(origin)
-        second_level = '.'.join(res[1:])
-        res = requests.get("https://icons.duckduckgo.com/ip3/"+second_level+".ico")
+        domain = get_domain(origin)
+        res = requests.get("https://icons.duckduckgo.com/ip3/"+domain+".ico")
         if res.status_code == requests.codes.ok:
             with open(filepath, 'wb') as file:
                 file.write(res.content)
