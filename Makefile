@@ -1,12 +1,12 @@
-ifndef PREFIX
-	PREFIX = /usr/local
+ifndef DESTDIR
+	DESTDIR = /usr/local
 endif
 
 install:
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-	cp -f bin/bookmark bin/dmenu-bookmark bin/rofi-bookmark bin/rofi-bookmark-download.py bin/rofi-bookmark-download bin/rofi-bookmark-download-retry bin/rofi-bookmark-add $(DESTDIR)$(PREFIX)/bin/
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/bookmark $(DESTDIR)$(PREFIX)/bin/dmenu-bookmark $(DESTDIR)$(PREFIX)/bin/rofi-bookmark $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download.py $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download-retry $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-add
+	mkdir -p $(DESTDIR)/bin
+	cp -f bin/bookmark bin/dmenu-bookmark bin/rofi-bookmark bin/rofi-bookmark-download.py bin/rofi-bookmark-download bin/rofi-bookmark-download-retry bin/rofi-bookmark-add $(DESTDIR)/bin/
+	chmod 755 $(DESTDIR)/bin/bookmark $(DESTDIR)/bin/dmenu-bookmark $(DESTDIR)/bin/rofi-bookmark $(DESTDIR)/bin/rofi-bookmark-download.py $(DESTDIR)/bin/rofi-bookmark-download $(DESTDIR)/bin/rofi-bookmark-download-retry $(DESTDIR)/bin/rofi-bookmark-add
 
 uninstall:
 	$(info Don't forget to remove the git hooks if deployed.)
-	rm -f $(DESTDIR)$(PREFIX)/bin/bookmark $(DESTDIR)$(PREFIX)/bin/dmenu-bookmark $(DESTDIR)$(PREFIX)/bin/rofi-bookmark $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download.py $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-git-hook $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-download-retry $(DESTDIR)$(PREFIX)/bin/rofi-bookmark-add
+	rm -f $(DESTDIR)/bin/bookmark $(DESTDIR)/bin/dmenu-bookmark $(DESTDIR)/bin/rofi-bookmark $(DESTDIR)/bin/rofi-bookmark-download.py $(DESTDIR)/bin/rofi-bookmark-git-hook $(DESTDIR)/bin/rofi-bookmark-download $(DESTDIR)/bin/rofi-bookmark-download-retry $(DESTDIR)/bin/rofi-bookmark-add

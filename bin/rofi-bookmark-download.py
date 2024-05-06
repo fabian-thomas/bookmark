@@ -9,19 +9,22 @@ import shutil
 import favicon
 from urllib.parse import urlparse
 
+BOOKMARK_TOOL=os.getenv("BOOKMARK_TOOL", "bookmark")
+CONVERT_TOOL=os.getenv("CONVERT_TOOL", "convert")
+
 # returns True on success
 def fix_image(filepath):
     tmp=tempfile.mktemp(suffix='.ico')
     # this fixes problems with images that are weirdly compressed and therefore
     # not supported by rofi
-    p = subprocess.run(["convert", "-compress", "None", filepath, tmp])
+    p = subprocess.run([CONVERT_TOOL, "-compress", "None", filepath, tmp])
     # only copy when succesfull, some images break when we call convert...
     if p.returncode == 0 and os.path.exists(tmp):
         shutil.move(tmp, filepath)
         return True
     else:
         # try one more time with 50% resizing which works in practice
-        p = subprocess.run(["convert", "-resize", "50%", filepath, tmp])
+        p = subprocess.run([CONVERT_TOOL, "-resize", "50%", filepath, tmp])
         if p.returncode == 0 and os.path.exists(tmp):
             shutil.move(tmp, filepath)
             return True
@@ -52,7 +55,7 @@ os.makedirs(cache_dir, exist_ok=True)
 bookmarks = {}
 # maps the origins (scheme+domain+port) to icon file names
 origins = {}
-with subprocess.Popen(['bookmark', 'list'], stdout=subprocess.PIPE) as proc:
+with subprocess.Popen([BOOKMARK_TOOL, 'list'], stdout=subprocess.PIPE) as proc:
     stdout, _ = proc.communicate()
     for line in stdout.splitlines():
             name = line.decode()
