@@ -95,7 +95,9 @@ for origin in origins:
                 icons = favicon.get(origin, timeout=2, headers=headers)
                 if len(icons) > 0:
                     icon = icons[0]
-                    res = requests.get(icon.url, headers=headers)
+                    # Fix for syncthing icon
+                    url = icon.url.replace("{{syncthingStatus()}}", "default")
+                    res = requests.get(url, headers=headers)
                     if res.status_code == requests.codes.ok:
                         with open(filepath, 'wb') as image:
                             image.write(res.content)
