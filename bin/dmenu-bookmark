@@ -3,32 +3,20 @@
 DMENU_COMMAND="$DMENU -p Name -i"
 
 cmd_open() {
-	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
-	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
-		export BOOKMARK
+	if BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")" && [ -n "$BOOKMARK" ]; then
 		bookmark open "$BOOKMARK"
 	fi
 }
 
 cmd_add() {
-	export URL="$1"
-
-	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
-	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
-		export BOOKMARK
-		if [ -n "$URL" ]; then
-			"$TERMINAL" -e sh -c 'echo "$URL" | bookmark add "$BOOKMARK" -'
-		else
-			"$TERMINAL" -e sh -c 'bookmark add "$BOOKMARK"'
-		fi
+	if BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")" && [ -n "$BOOKMARK" ]; then
+		"$TERMINAL" -e bookmark --interactive add "$BOOKMARK"
 	fi
 }
 
 cmd_edit() {
-	BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")"
-	if [ "$?" -eq 0 ] && [ -n "$BOOKMARK" ]; then
-		export BOOKMARK
-		"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
+	if BOOKMARK="$(bookmark list | eval "$DMENU_COMMAND")" && [ -n "$BOOKMARK" ]; then
+		"$TERMINAL" -e bookmark edit "$BOOKMARK"
 	fi
 }
 

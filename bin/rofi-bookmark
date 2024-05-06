@@ -27,8 +27,7 @@ clip() {
 }
 
 edit() {
-	export BOOKMARK="$1"
-	"$TERMINAL" -e sh -c 'bookmark edit "$BOOKMARK"'
+	"$TERMINAL" -e bookmark edit "$1"
 }
 
 remove() {
