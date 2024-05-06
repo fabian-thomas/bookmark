@@ -35,7 +35,7 @@ def fix_image(filepath):
 
 def get_domain(origin):
     res = tldextract.extract(origin)
-    domain = '.'.join(res[1:])
+    domain = res.domain + '.' + res.suffix
     if res.subdomain != '':
         domain = res.subdomain + '.' + domain
     return domain
@@ -100,7 +100,8 @@ for origin in origins:
                         with open(filepath, 'wb') as image:
                             image.write(res.content)
                         # I don't know why this breaks for these images but just
-                        # remove it for now.
+                        # remove it for now. It's probably because they can be
+                        # big and that does break convert for some reason.
                         # worked = fix_image(filepath)
             except Exception:
                 pass
